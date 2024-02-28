@@ -1,5 +1,24 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { ModuleFederationPlugin } = require('webpack').container;
+
+const federationConfig = {
+    name: 'remote',
+    filename: 'remoteEntry.js',
+    exposes: {
+        './App': './src/App',
+    },
+    shared: {
+        react: {
+            singleton: true,
+            eager: true
+        },
+        'react-dom': {
+            singleton: true,
+            eager: true
+        }
+    },
+}
 
 module.exports = {
     entry: './src/index',
@@ -20,6 +39,7 @@ module.exports = {
         extensions: ['.tsx', '.ts', '.js']
     },
     plugins: [
+        new ModuleFederationPlugin(federationConfig),
         new HtmlWebpackPlugin({
             template: './public/index.html'
         })
